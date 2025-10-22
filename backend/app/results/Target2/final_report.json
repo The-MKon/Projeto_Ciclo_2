@@ -1,0 +1,61 @@
+{
+  "timestamp": "2025-10-22T17:43:31.422589",
+  "target": "Target2",
+  "model": {
+    "name": "Lasso",
+    "best_params": {
+      "model__alpha": 5
+    }
+  },
+  "features": {
+    "original_count": 122,
+    "rfecv_selected": 76,
+    "final_selected": 10,
+    "reduction_applied": 112,
+    "reduction_percentage": 91.80327868852459,
+    "selected_features": [
+      "Respostas_P_Media",
+      "F1107",
+      "F0711",
+      "F0709",
+      "Tempo_Min",
+      "Likert_Score_Min",
+      "F1105",
+      "F0712",
+      "F0710",
+      "F0708"
+    ]
+  },
+  "metrics": {
+    "train": {
+      "r2": 0.4557668880588751,
+      "rmse": 20.2824070096019,
+      "mae": 16.989485199000775,
+      "mape": 6.183014658759743e+17
+    },
+    "test": {
+      "r2": 0.3267491410497836,
+      "rmse": 23.4667736397995,
+      "mae": 20.445009964225665,
+      "mape": 7.862048502637722e+17
+    },
+    "baseline": {
+      "r2_test": -0.029094241186787384
+    },
+    "improvement_over_baseline": 0.35584338223657097,
+    "improvement_percentage": 1223.0715348512706
+  },
+  "overfitting_analysis": {
+    "r2_difference": 0.12901774700909152,
+    "relative_drop_percentage": 28.307836832680405,
+    "status": "moderate"
+  },
+  "cv_score": 0.3838878896120442,
+  "cv_std": 0.16068227946440514,
+  "anti_overfitting_strategies": {
+    "regularization": "Increased alpha/L1/L2 parameters",
+    "tree_constraints": "Reduced max_depth, increased min_samples_leaf",
+    "feature_reduction": "Reduced from 122 to 10 features",
+    "cross_validation": "5-fold CV for model selection"
+  }
+}

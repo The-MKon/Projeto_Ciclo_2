@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+pandas
+openpyxl
+python-multipart
+pydantic
+pydantic-settings
+slowapi
+scikit-learn
+joblib
+xgboost
+pyarrow
+fastparquet
+numpy
