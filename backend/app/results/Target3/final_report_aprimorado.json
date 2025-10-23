@@ -1,5 +1,5 @@
 {
-    "timestamp": "2025-10-22T18:00:44.235846",
+    "timestamp": "2025-10-23T21:07:42.959153",
     "target": "Target3",
     "model": {
         "name": "Ridge",
@@ -13,7 +13,7 @@
         "rfecv_selected": 42,
         "final_selected": 20,
         "reduction_applied": 102,
-        "reduction_percentage": 83.61,
+        "reduction_percentage": 83.60655737704919,
         "selected_features": [
             "F1103",
             "F1105",
@@ -39,34 +39,34 @@
     },
     "metrics": {
         "train": {
-            "r2": 0.4652,
-            "rmse": 16.39,
-            "mae": 13.26,
-            "mape": 1.268941177985344e+17
+            "r2": 0.4652109119583552,
+            "rmse": 16.387740699393046,
+            "mae": 13.257909566999219,
+            "mape": 46.381092706787264
         },
         "test": {
-            "r2": 0.4645,
-            "rmse": 15.73,
-            "mae": 12.72,
-            "mape": 5.016950180463154e+17
+            "r2": 0.46447783937367115,
+            "rmse": 15.731512264881761,
+            "mae": 12.72165431776618,
+            "mape": 17.29969777854816
         },
         "baseline": {
-            "r2_test": -0.6949690170815308
+            "r2_test": -0.6949690170815424
         },
-        "improvement_over_baseline": 1.159446856455202,
-        "improvement_percentage": 166.8343232514466
+        "improvement_over_baseline": 1.1594468564552134,
+        "improvement_percentage": 166.83432325144543
     },
     "overfitting_analysis": {
-        "r2_difference": 0.0007,
-        "relative_drop_percentage": 0.15,
-        "status": "perfeito"
+        "r2_difference": 0.0007330725846840247,
+        "relative_drop_percentage": 0.15757854466441407,
+        "status": "excellent"
     },
-    "cv_score": 0.3563,
-    "cv_std": 0.1728,
+    "cv_score": 0.35626892662368087,
+    "cv_std": 0.17283052960317635,
     "anti_overfitting_strategies": {
-        "regularization": "Increased alpha to 500 with L2 regularization (Ridge)",
-        "tree_constraints": "Not applicable for linear models",
-        "feature_reduction": "Reduced from 122 to 20 features (83.61% reduction)",
+        "regularization": "Increased alpha/L1/L2 parameters",
+        "tree_constraints": "Reduced max_depth, increased min_samples_leaf",
+        "feature_reduction": "Reduced from 122 to 20 features",
         "cross_validation": "5-fold CV for model selection"
     }
 }

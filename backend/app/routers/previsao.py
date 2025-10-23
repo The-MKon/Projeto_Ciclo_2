@@ -93,12 +93,14 @@ def carregar_modelos():
                         "metricas_treino": {
                             "r2": round(report["metrics"]["train"]["r2"], 4),
                             "rmse": round(report["metrics"]["train"]["rmse"], 2),
-                            "mae": round(report["metrics"]["train"]["mae"], 2)
+                            "mae": round(report["metrics"]["train"]["mae"], 2),
+                            "mape": round(report["metrics"]["train"].get("mape", 0), 2)  # <-- LINHA ADICIONADA
                         },
                         "metricas_teste": {
                             "r2": round(report["metrics"]["test"]["r2"], 4),
                             "rmse": round(report["metrics"]["test"]["rmse"], 2),
-                            "mae": round(report["metrics"]["test"]["mae"], 2)
+                            "mae": round(report["metrics"]["test"]["mae"], 2),
+                            "mape": round(report["metrics"]["test"].get("mape", 0), 2)   # <-- LINHA ADICIONADA
                         },
                         "overfitting": {
                             "diferenca_r2": round(report["overfitting_analysis"]["r2_difference"], 4),
@@ -115,8 +117,8 @@ def carregar_modelos():
                     "nome_modelo": type(modelo_carregado).__name__,
                     "parametros": {},
                     "versao": versao,
-                    "metricas_treino": {"r2": None, "rmse": None, "mae": None},
-                    "metricas_teste": {"r2": None, "rmse": None, "mae": None},
+                    "metricas_treino": {"r2": None, "rmse": None, "mae": None, "mape": None}, # <-- ADICIONADO "mape"
+                    "metricas_teste": {"r2": None, "rmse": None, "mae": None, "mape": None},  # <-- ADICIONADO "mape"
                     "overfitting": {"diferenca_r2": None, "queda_percentual": None, "status": "unknown"},
                     "total_features": len(artefatos[key]["features"]),
                     "features_originais": None,
@@ -125,6 +127,7 @@ def carregar_modelos():
             
             print(f"   ✅ R² Treino: {metadados_modelos[key]['metricas_treino']['r2']}")
             print(f"   ✅ R² Teste: {metadados_modelos[key]['metricas_teste']['r2']}")
+            print(f"   ✅ MAPE Teste: {metadados_modelos[key]['metricas_teste']['mape']}%")
             print(f"   ✅ Total Features: {metadados_modelos[key]['total_features']}\n")
 
         except FileNotFoundError as e:
