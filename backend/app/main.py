@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from .routers import analise, upload, previsao
+from .routers import analise, upload, previsao, upload_e_prever
 from .core.settings import settings
 
 # Configuração do Rate Limiter: 5 requisições por minuto por IP
@@ -18,7 +18,7 @@ app = FastAPI(
 
 # Adiciona os middlewares de rate limiting
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) #type: ignore
 
 origins = [
     "http://localhost:3000",  # Exemplo: para o frontend rodando localmente
@@ -36,6 +36,7 @@ app.add_middleware(
 app.include_router(analise.router)
 app.include_router(upload.router)
 app.include_router(previsao.router)
+app.include_router(upload_e_prever.router)
 
 @app.get("/", tags=["Root"])
 def read_root():

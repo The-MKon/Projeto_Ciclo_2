@@ -1,0 +1,72 @@
+{
+    "timestamp": "2025-10-22T18:00:44.235846",
+    "target": "Target3",
+    "model": {
+        "name": "Ridge",
+        "best_params": {
+            "model__solver": "svd",
+            "model__alpha": 500
+        }
+    },
+    "features": {
+        "original_count": 122,
+        "rfecv_selected": 42,
+        "final_selected": 20,
+        "reduction_applied": 102,
+        "reduction_percentage": 83.61,
+        "selected_features": [
+            "F1103",
+            "F1105",
+            "Respostas_P_Media",
+            "F0711",
+            "Atitude_Consistente",
+            "P09",
+            "F0708",
+            "T07",
+            "Consistencia_F07",
+            "F1109",
+            "P02",
+            "P07",
+            "F0712",
+            "P08",
+            "F0713",
+            "QtdPessoas",
+            "P13",
+            "P12",
+            "T12",
+            "P12.1"
+        ]
+    },
+    "metrics": {
+        "train": {
+            "r2": 0.4652,
+            "rmse": 16.39,
+            "mae": 13.26,
+            "mape": 1.268941177985344e+17
+        },
+        "test": {
+            "r2": 0.4645,
+            "rmse": 15.73,
+            "mae": 12.72,
+            "mape": 5.016950180463154e+17
+        },
+        "baseline": {
+            "r2_test": -0.6949690170815308
+        },
+        "improvement_over_baseline": 1.159446856455202,
+        "improvement_percentage": 166.8343232514466
+    },
+    "overfitting_analysis": {
+        "r2_difference": 0.0007,
+        "relative_drop_percentage": 0.15,
+        "status": "perfeito"
+    },
+    "cv_score": 0.3563,
+    "cv_std": 0.1728,
+    "anti_overfitting_strategies": {
+        "regularization": "Increased alpha to 500 with L2 regularization (Ridge)",
+        "tree_constraints": "Not applicable for linear models",
+        "feature_reduction": "Reduced from 122 to 20 features (83.61% reduction)",
+        "cross_validation": "5-fold CV for model selection"
+    }
+}

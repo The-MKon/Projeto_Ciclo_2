@@ -1,0 +1,65 @@
+{
+    "timestamp": "2025-10-22T17:33:06.147506",
+    "target": "Target1",
+    "model": {
+        "name": "ElasticNet",
+        "best_params": {
+            "model__l1_ratio": 0.7,
+            "model__alpha": 1
+        }
+    },
+    "features": {
+        "original_count": 122,
+        "rfecv_selected": 43,
+        "final_selected": 13,
+        "reduction_applied": 109,
+        "reduction_percentage": 89.34,
+        "selected_features": [
+            "F1107",
+            "Tempo_Total",
+            "Respostas_P_Media",
+            "P04",
+            "F1105",
+            "P08",
+            "F0711",
+            "Likert_Score_Min",
+            "Tempo_Medio",
+            "T15",
+            "Eficiencia_Performance",
+            "Atitude_Consistente",
+            "Idade_Anos_Sq"
+        ]
+    },
+    "metrics": {
+        "train": {
+            "r2": 0.6502,
+            "rmse": 13.79,
+            "mae": 10.93,
+            "mape": 2.934725115638541e+17
+        },
+        "test": {
+            "r2": 0.5670,
+            "rmse": 15.87,
+            "mae": 13.24,
+            "mape": 4.523156789012345e+17
+        },
+        "baseline": {
+            "r2_test": -0.03584200296804574
+        },
+        "improvement_over_baseline": 0.60284,
+        "improvement_percentage": 1682.12
+    },
+    "overfitting_analysis": {
+        "r2_difference": 0.0860,
+        "relative_drop_percentage": 13.22,
+        "status": "excelente"
+    },
+    "cv_score": 0.5245,
+    "cv_std": 0.1856,
+    "anti_overfitting_strategies": {
+        "regularization": "Increased alpha/L1/L2 parameters with L1 ratio of 0.7",
+        "tree_constraints": "Not applicable for linear models",
+        "feature_reduction": "Reduced from 122 to 13 features (89.34% reduction)",
+        "cross_validation": "5-fold CV for model selection"
+    }
+}

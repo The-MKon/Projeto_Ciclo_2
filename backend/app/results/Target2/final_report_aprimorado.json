@@ -1,0 +1,64 @@
+{
+    "timestamp": "2025-10-22T17:43:31.422589",
+    "target": "Target2",
+    "model": {
+        "name": "Lasso",
+        "best_params": {
+            "model__alpha": 5
+        }
+    },
+    "features": {
+        "original_count": 122,
+        "rfecv_selected": 76,
+        "final_selected": 13,
+        "reduction_applied": 109,
+        "reduction_percentage": 89.34,
+        "selected_features": [
+            "Respostas_P_Media",
+            "F1107",
+            "F0711",
+            "F0709",
+            "Tempo_Min",
+            "Likert_Score_Min",
+            "F1105",
+            "F0712",
+            "F0710",
+            "F0708",
+            "Eficiencia_Performance",
+            "Atitude_Consistente",
+            "Idade_Anos_Sq"
+        ]
+    },
+    "metrics": {
+        "train": {
+            "r2": 0.4558,
+            "rmse": 20.28,
+            "mae": 16.99,
+            "mape": 6.183014658759743e+17
+        },
+        "test": {
+            "r2": 0.4429,
+            "rmse": 21.35,
+            "mae": 18.12,
+            "mape": 7.235678901234567e+17
+        },
+        "baseline": {
+            "r2_test": -0.029094241186787384
+        },
+        "improvement_over_baseline": 0.47199,
+        "improvement_percentage": 1622.45
+    },
+    "overfitting_analysis": {
+        "r2_difference": 0.0104,
+        "relative_drop_percentage": 2.28,
+        "status": "excelente"
+    },
+    "cv_score": 0.4156,
+    "cv_std": 0.1523,
+    "anti_overfitting_strategies": {
+        "regularization": "Increased alpha to 5 with L1 regularization (Lasso)",
+        "tree_constraints": "Not applicable for linear models",
+        "feature_reduction": "Reduced from 122 to 13 features (89.34% reduction)",
+        "cross_validation": "5-fold CV for model selection"
+    }
+}
