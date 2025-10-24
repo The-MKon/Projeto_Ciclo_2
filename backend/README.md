@@ -117,13 +117,6 @@ A forma mais fácil de explorar e testar a API é através da documentação int
     ```
 -   **`POST /processar/excel-completo-com-preprocessamento`**: Faz o upload de um arquivo `JogadoresV2.xlsx` bruto, aplica todo o pipeline e retorna um JSON completo com os dados processados e as previsões para cada jogador.
 
-## 🤝 Colaboradores
-
--   Maikon Junior Evangelista
--   Matheus Eduardo
--   Rafael Arati
--   Vinicius Paiva
-
 ---
 
 ### Anexo: Arquivo `.env.example`
@@ -139,7 +132,7 @@ Para garantir que outros desenvolvedores possam configurar o ambiente corretamen
 # Chave secreta para proteger os endpoints da API.
 # Em um ambiente de produção, substitua por uma chave forte e aleatória
 # gerada por um gerenciador de senhas ou um comando como `openssl rand -hex 32`.
-API_SECRET_KEY="IMSIRA_ALGUMA_CHAVE_PARA"
+API_SECRET_KEY="INSIRA_ALGUMA_CHAVE_PARA"
 
 # Ambiente de execução.
 # Use "development" para rodar localmente (ativa o modo de debug).
