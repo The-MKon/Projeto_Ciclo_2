@@ -22,7 +22,8 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) #type
 
 origins = [
     "http://localhost:3000",  # Exemplo: para o frontend rodando localmente
-    "http://127.0.0.1:5500", # Exemplo: para o Live Server do VS Code
+    "http://127.0.0.1:5500",
+    "http://localhost:5173"
 ]
 
 app.add_middleware(
