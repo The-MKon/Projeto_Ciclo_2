@@ -2,4 +2,6 @@
 __pycache__/
 .env
 venv/
+data/
+results/
 *.pkl
