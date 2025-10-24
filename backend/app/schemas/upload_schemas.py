@@ -8,9 +8,13 @@ from typing import Optional
 class SessionActivityRow(BaseModel):
     Codigo_de_Acesso: str
     F0101: int = Field(..., alias='F0101') # 'alias' permite que o nome do campo no Pydantic seja diferente do cabeçalho da coluna
-    Target1: float
-    Target2: float
-    Target3: float
+    # Target1: float
+    # Target2: float
+    # Target3: float
+    Target1: Optional[float] = None
+    Target2: Optional[float] = None
+    Target3: Optional[float] = None
+    
     
     # Adicione outros campos obrigatórios que você espera no arquivo
     # Exemplo:
@@ -24,4 +28,6 @@ class SessionActivityRow(BaseModel):
 class FeatureRow(BaseModel):
     Coluna: str
     Features: str
-
+    
+    class Config:
+        extra = 'allow'
