@@ -1,4 +1,3 @@
-# backend/app/preprocessing/preprocessor.py
 import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
@@ -7,6 +6,7 @@ from pathlib import Path
 class DataPreprocessor:
     """
     Classe que replica toda a lógica de pré-processamento do notebook.
+    ✅ Agora lida corretamente com planilhas SEM colunas Target.
     """
     
     def __init__(self):
@@ -39,8 +39,11 @@ class DataPreprocessor:
         tempo_cols = [col for col in df.columns if 'Tempo' in col and col not in self.col_texto]
         self.col_tempo = list(set(t_cols + tempo_cols))
         
+        # ✅ CRÍTICO: Filtrar apenas os targets que REALMENTE existem no DataFrame
+        targets_existentes = [col for col in self.col_targets if col in df.columns]
+        
         # Colunas NãoLikert (o que sobrou)
-        todas_classificadas = (self.col_id + self.col_datetime + self.col_targets + 
+        todas_classificadas = (self.col_id + self.col_datetime + targets_existentes + 
                               self.col_texto + self.col_likert + self.col_tempo)
         self.col_nao_likert = [col for col in df.columns if col not in todas_classificadas]
     
@@ -59,8 +62,11 @@ class DataPreprocessor:
         if 'Data/Hora Último' in df_clean.columns:
             df_clean['Data/Hora Último'] = pd.to_datetime(df_clean['Data/Hora Último'], errors='coerce')
         
+        # ✅ MUDANÇA: Converter apenas os targets que EXISTEM
+        targets_existentes = [col for col in self.col_targets if col in df_clean.columns]
+        
         # Converter colunas numéricas
-        colunas_numericas = self.col_likert + self.col_tempo + self.col_nao_likert + self.col_targets
+        colunas_numericas = self.col_likert + self.col_tempo + self.col_nao_likert + targets_existentes
         for col in colunas_numericas:
             if col in df_clean.columns and col not in self.col_texto:
                 df_clean[col] = pd.to_numeric(df_clean[col], errors='coerce')
@@ -76,8 +82,9 @@ class DataPreprocessor:
         """Substitui valores especiais por NaN."""
         df_treated = df.copy()
         
-        # Substituir 'N/A' por NaN
+        # Substituir 'N/A' por NaN (usando método correto para evitar warning)
         df_treated = df_treated.replace('N/A', np.nan)
+        df_treated = df_treated.infer_objects(copy=False)  # ✅ Evita FutureWarning
         
         # Substituir -1, -1.0 e códigos de status por NaN
         for col in self.col_likert + self.col_tempo + self.col_nao_likert:
@@ -185,34 +192,81 @@ class DataPreprocessor:
         # Imputar Likert com mediana
         likert_to_impute = [col for col in self.col_likert if col in df_imputed.columns]
         if likert_to_impute:
-            imputer = SimpleImputer(strategy='median')
-            df_imputed[likert_to_impute] = imputer.fit_transform(df_imputed[likert_to_impute])
+            try:
+                imputer = SimpleImputer(strategy='median')
+                df_imputed[likert_to_impute] = imputer.fit_transform(df_imputed[likert_to_impute])
+            except Exception as e:
+                print(f"  ⚠️ Erro ao imputar Likert: {e}")
         
         # Imputar Tempo com mediana
         tempo_to_impute = [col for col in self.col_tempo if col in df_imputed.columns]
         if tempo_to_impute:
-            imputer = SimpleImputer(strategy='median')
-            df_imputed[tempo_to_impute] = imputer.fit_transform(df_imputed[tempo_to_impute])
+            try:
+                imputer = SimpleImputer(strategy='median')
+                df_imputed[tempo_to_impute] = imputer.fit_transform(df_imputed[tempo_to_impute])
+            except Exception as e:
+                print(f"  ⚠️ Erro ao imputar Tempo: {e}")
         
-        # Imputar NãoLikert com mediana
-        naolikert_to_impute = [col for col in self.col_nao_likert 
-                               if col in df_imputed.columns and df_imputed[col].dtype in ['float64', 'int64']]
+        # Imputar NãoLikert com mediana (EXCLUINDO os Targets)
+        targets_existentes = [col for col in self.col_targets if col in df_imputed.columns]
+        naolikert_to_impute = [
+            col for col in self.col_nao_likert 
+            if col in df_imputed.columns 
+            and col not in targets_existentes  # ✅ EXCLUIR targets
+            and df_imputed[col].dtype in ['float64', 'int64']
+        ]
         if naolikert_to_impute:
-            imputer = SimpleImputer(strategy='median')
-            df_imputed[naolikert_to_impute] = imputer.fit_transform(df_imputed[naolikert_to_impute])
+            try:
+                imputer = SimpleImputer(strategy='median')
+                df_imputed[naolikert_to_impute] = imputer.fit_transform(df_imputed[naolikert_to_impute])
+            except Exception as e:
+                print(f"  ⚠️ Erro ao imputar NãoLikert: {e}")
         
         # Preencher texto com 'UNKNOWN'
         texto_to_fill = [col for col in self.col_texto if col in df_imputed.columns]
         for col in texto_to_fill:
             df_imputed[col] = df_imputed[col].fillna('UNKNOWN')
         
+        # ✅ CRÍTICO: Imputar targets INDIVIDUALMENTE (evita erro de shape)
+        for target in targets_existentes:
+            try:
+                if df_imputed[target].isnull().any():
+                    # Calcular mediana apenas dos valores não-nulos
+                    mediana = df_imputed[target].median()
+                    if pd.notna(mediana):
+                        df_imputed[target].fillna(mediana, inplace=True)
+                    else:
+                        # Se todos são NaN, preencher com 0
+                        df_imputed[target].fillna(0, inplace=True)
+                    print(f"  ✓ Target '{target}' imputado (mediana: {mediana})")
+            except Exception as e:
+                print(f"  ⚠️ Erro ao imputar {target}: {e}")
+                df_imputed[target].fillna(0, inplace=True)
+        
         return df_imputed
     
     def processar(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Método principal que executa todo o pipeline de pré-processamento.
+        ✅ Agora lida corretamente com planilhas SEM colunas Target.
         """
         print("🔄 Iniciando pré-processamento...")
+        
+        # ✅ NOVO: Detectar se os targets existem ANTES de processar
+        tem_targets = all(col in df.columns for col in self.col_targets)
+        print(f"  📊 Targets na planilha: {'SIM' if tem_targets else 'NÃO'}")
+        
+        # ✅ CRÍTICO: Se targets existem mas estão TODOS vazios, remover
+        if tem_targets:
+            targets_totalmente_vazios = []
+            for target in self.col_targets:
+                if df[target].isnull().all():
+                    targets_totalmente_vazios.append(target)
+            
+            if targets_totalmente_vazios:
+                print(f"  ⚠️ Targets totalmente vazios detectados: {targets_totalmente_vazios}")
+                df = df.drop(columns=targets_totalmente_vazios)
+                tem_targets = False  # Tratar como se não tivesse targets
         
         # 1. Limpeza inicial
         df_clean = self.limpar_dados(df)
@@ -229,6 +283,14 @@ class DataPreprocessor:
         # 4. Imputar missing values
         df_final = self.imputar_missing_values(df_featured)
         print(f"  ✓ Missing values imputados")
+        
+        # ✅ NOVO: Se os targets NÃO existiam, criar colunas vazias para eles
+        # (Isso evita erros no endpoint ao tentar adicionar previsões)
+        if not tem_targets:
+            for target in self.col_targets:
+                if target not in df_final.columns:
+                    df_final[target] = None
+            print(f"  ✓ Colunas de Target criadas (vazias)")
         
         print(f"✅ Pré-processamento concluído! Shape final: {df_final.shape}")
         return df_final
