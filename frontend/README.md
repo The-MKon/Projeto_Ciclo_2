@@ -1,7 +1,5 @@
 # Analytics Dashboard - Frontend
 
-![Visão Geral do Dashboard](public\dashboard.jpeg)
-
 ## 📊 Sobre o Projeto
 
 Este é o frontend para a API de Análise Preditiva de Perfil de Jogadores. Construído com **React**, **Vite** e **Tailwind CSS**, este dashboard interativo permite que os usuários façam upload de arquivos Excel com dados brutos de jogadores, visualizem os resultados do pré-processamento, e explorem as previsões geradas pelos modelos de Machine Learning servidos pelo backend.
