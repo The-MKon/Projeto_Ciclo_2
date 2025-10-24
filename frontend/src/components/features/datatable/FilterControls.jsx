@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Filter, X } from 'lucide-react';
 
-const FilterControls = ({ onFilterChange, resultCount, totalCount }) => {
-  // ADICIONADO: Estado para os targets reais
+const FilterControls = ({ data, onFilterChange, resultCount, totalCount }) => {
   const [localFilters, setLocalFilters] = useState({
     target1PrevistoMin: '', target1PrevistoMax: '',
     target2PrevistoMin: '', target2PrevistoMax: '',
@@ -11,6 +10,19 @@ const FilterControls = ({ onFilterChange, resultCount, totalCount }) => {
     target2RealMin: '', target2RealMax: '',
     target3RealMin: '', target3RealMax: '',
   });
+
+  // ===== INÍCIO DA LÓGICA DE VERIFICAÇÃO =====
+  // Usamos useMemo para calcular isso apenas uma vez, melhorando a performance.
+  const hasRealTargets = useMemo(() => {
+    if (!data || data.length === 0) return false;
+    // 'some' para a verificação assim que encontra a primeira linha válida.
+    return data.some(item => 
+        (item.Target1 !== null && item.Target1 !== undefined) ||
+        (item.Target2 !== null && item.Target2 !== undefined) ||
+        (item.Target3 !== null && item.Target3 !== undefined)
+    );
+  }, [data]);
+  // ===== FIM DA LÓGICA DE VERIFICAÇÃO =====
 
   const handleInputChange = (filterName, value) => {
     setLocalFilters(prev => ({ ...prev, [filterName]: value }));
@@ -27,7 +39,6 @@ const FilterControls = ({ onFilterChange, resultCount, totalCount }) => {
   }, [localFilters, onFilterChange]);
 
   const clearFilters = () => {
-    // ADICIONADO: Limpar os novos campos de filtro
     setLocalFilters({
       target1PrevistoMin: '', target1PrevistoMax: '',
       target2PrevistoMin: '', target2PrevistoMax: '',
@@ -41,7 +52,7 @@ const FilterControls = ({ onFilterChange, resultCount, totalCount }) => {
   return (
     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
-        {/* ... Seção do título e contador (inalterada) ... */}
+        {/* ... Seção do título e contador ... */}
         <h3 className="font-semibold text-slate-800 flex items-center gap-2">
           <Filter className="w-5 h-5 text-indigo-600" />
           Filtros
@@ -53,25 +64,25 @@ const FilterControls = ({ onFilterChange, resultCount, totalCount }) => {
           <X className="w-4 h-4" /> Limpar Filtros
         </button>
       </div>
-      {/* ALTERAÇÃO: Grid agora com 6 colunas em telas grandes para melhor alinhamento */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         
-        {/* --- FILTROS DE PREVISÃO --- */}
-        <div className="lg:col-span-2">
+        {/* --- FILTROS DE PREVISÃO (Sempre visíveis) --- */}
+        <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Target 1 (Previsto)</label>
           <div className="flex items-center gap-2">
             <input type="number" placeholder="Mín" value={localFilters.target1PrevistoMin} onChange={(e) => handleInputChange('target1PrevistoMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
             <input type="number" placeholder="Máx" value={localFilters.target1PrevistoMax} onChange={(e) => handleInputChange('target1PrevistoMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
           </div>
         </div>
-        <div className="lg:col-span-2">
+        <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Target 2 (Previsto)</label>
           <div className="flex items-center gap-2">
             <input type="number" placeholder="Mín" value={localFilters.target2PrevistoMin} onChange={(e) => handleInputChange('target2PrevistoMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
             <input type="number" placeholder="Máx" value={localFilters.target2PrevistoMax} onChange={(e) => handleInputChange('target2PrevistoMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
           </div>
         </div>
-        <div className="lg:col-span-2">
+        <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Target 3 (Previsto)</label>
           <div className="flex items-center gap-2">
             <input type="number" placeholder="Mín" value={localFilters.target3PrevistoMin} onChange={(e) => handleInputChange('target3PrevistoMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
@@ -79,28 +90,35 @@ const FilterControls = ({ onFilterChange, resultCount, totalCount }) => {
           </div>
         </div>
 
-        {/* --- NOVO: FILTROS DE DADOS REAIS --- */}
-        <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 mb-1">Target 1 (Real)</label>
-          <div className="flex items-center gap-2">
-            <input type="number" placeholder="Mín" value={localFilters.target1RealMin} onChange={(e) => handleInputChange('target1RealMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
-            <input type="number" placeholder="Máx" value={localFilters.target1RealMax} onChange={(e) => handleInputChange('target1RealMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
-          </div>
-        </div>
-        <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 mb-1">Target 2 (Real)</label>
-          <div className="flex items-center gap-2">
-            <input type="number" placeholder="Mín" value={localFilters.target2RealMin} onChange={(e) => handleInputChange('target2RealMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
-            <input type="number" placeholder="Máx" value={localFilters.target2RealMax} onChange={(e) => handleInputChange('target2RealMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
-          </div>
-        </div>
-        <div className="lg:col-span-2">
-          <label className="block text-sm font-medium text-slate-700 mb-1">Target 3 (Real)</label>
-          <div className="flex items-center gap-2">
-            <input type="number" placeholder="Mín" value={localFilters.target3RealMin} onChange={(e) => handleInputChange('target3RealMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
-            <input type="number" placeholder="Máx" value={localFilters.target3RealMax} onChange={(e) => handleInputChange('target3RealMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
-          </div>
-        </div>
+        {/* --- FILTROS DE DADOS REAIS (Renderização Condicional) --- */}
+        {hasRealTargets && (
+          <>
+            <div className="col-span-1 sm:col-span-2 md:col-span-3 pt-2">
+                <p className="text-xs text-center text-slate-500">Filtros para os valores reais (disponíveis neste dataset):</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Target 1 (Real)</label>
+              <div className="flex items-center gap-2">
+                <input type="number" placeholder="Mín" value={localFilters.target1RealMin} onChange={(e) => handleInputChange('target1RealMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
+                <input type="number" placeholder="Máx" value={localFilters.target1RealMax} onChange={(e) => handleInputChange('target1RealMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Target 2 (Real)</label>
+              <div className="flex items-center gap-2">
+                <input type="number" placeholder="Mín" value={localFilters.target2RealMin} onChange={(e) => handleInputChange('target2RealMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
+                <input type="number" placeholder="Máx" value={localFilters.target2RealMax} onChange={(e) => handleInputChange('target2RealMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Target 3 (Real)</label>
+              <div className="flex items-center gap-2">
+                <input type="number" placeholder="Mín" value={localFilters.target3RealMin} onChange={(e) => handleInputChange('target3RealMin', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
+                <input type="number" placeholder="Máx" value={localFilters.target3RealMax} onChange={(e) => handleInputChange('target3RealMax', e.target.value)} className="w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
